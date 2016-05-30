@@ -6,5 +6,5 @@
     <string name="main_broadcast">Broadcast</string>
     <string name="main_status">Current Status</string>
     <string name="main_peer_list">Peer List:</string>
-    <string name="main_my_id">My ID: beef</string>
+    <string name="main_my_id">My ID:</string>
 </resources>
