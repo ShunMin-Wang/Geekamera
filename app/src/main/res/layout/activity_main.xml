@@ -9,31 +9,62 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.gg.geekamera.MainActivity">
 
-    <LinearLayout
-        android:orientation="vertical"
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="300dp"
+        android:id="@+id/imageView"
+        android:layout_alignParentStart="true"
+        android:src="@drawable/camera_icon"/>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:weightSum="1">
+        android:layout_below="@+id/imageView"
+        android:layout_alignParentStart="true">
 
-        <TableRow
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.48"
-            android:layout_gravity="center_horizontal|left|right|top">
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/main_peer_list"
+            android:id="@+id/textViewPeerList"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
 
-            <ImageButton
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:id="@+id/imageButton" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
+        <Button
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|bottom|left|right"
-            android:layout_weight="0.48"></TableRow>
-    </LinearLayout>
+            android:text="@string/main_refresh_peer"
+            android:id="@+id/buttonRefresh"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/main_broadcast"
+            android:id="@+id/buttonBroadcast"
+            android:layout_alignTop="@+id/buttonRefresh"
+            android:layout_alignParentEnd="true" />
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/listViewPeerList"
+            android:layout_below="@+id/textViewPeerList"
+            android:layout_toStartOf="@+id/textViewPeerList"
+            android:layout_alignParentEnd="true"
+            android:layout_above="@+id/buttonRefresh"
+            android:choiceMode="singleChoice" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/main_my_id"
+            android:id="@+id/textViewMyId"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
 </RelativeLayout>
