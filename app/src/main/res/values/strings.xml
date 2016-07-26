@@ -7,4 +7,8 @@
     <string name="main_status">Current Status</string>
     <string name="main_peer_list">Peer List:</string>
     <string name="main_my_id">My ID:</string>
+
+    <string name="title_activity_geek_preview">GeekPreviewActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

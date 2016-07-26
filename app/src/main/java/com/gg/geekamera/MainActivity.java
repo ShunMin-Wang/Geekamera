@@ -1,7 +1,9 @@
 package com.gg.geekamera;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.Image;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     public ArrayAdapter<String> mAdapter;
     public ListView mPeerListView;
     public TextView mSelfIdTextView;
-
+    private ImageView mCameraImageView;
 
     /* WiFi P2P */
     WifiP2pManager.Channel mChannel;
@@ -49,6 +52,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mSelfIdTextView = (TextView)findViewById(R.id.textViewMyId);
+        mCameraImageView = (ImageView)findViewById(R.id.imageView);
+        mCameraImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.setClass(MainActivity.this, GeekPreviewActivity.class);
+                startActivity(intent);
+            }
+        });
 
         Button buttonDiscover = (Button) findViewById(R.id.buttonRefresh);
         if (buttonDiscover != null) {

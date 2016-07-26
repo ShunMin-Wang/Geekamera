@@ -8,6 +8,7 @@ import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.util.Log;
 
@@ -18,14 +19,15 @@ public class GeekBroadcastReceiver extends BroadcastReceiver {
     private final static String TAG = "Geekamera";
     private WifiP2pManager mManager;
     private WifiP2pManager.Channel mChannel;
-    private MainActivity activity;
-    private List peers = new ArrayList();
+    private WifiP2pInfo mWifiP2pInfo;
+    private MainActivity mMainActivity;
+    private List mPeerList = new ArrayList();
 
     public GeekBroadcastReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel, MainActivity activity) {
         super();
         this.mManager = manager;
         this.mChannel = channel;
-        this.activity = activity;
+        this.mMainActivity = activity;
     }
 
     @Override
@@ -36,41 +38,37 @@ public class GeekBroadcastReceiver extends BroadcastReceiver {
             // the Activity.
             int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
             if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
-                //activity.setIsWifiP2pEnabled(true);
+                //mMainActivity.setIsWifiP2pEnabled(true);
                 Log.d(TAG, "Wifi is enabled");
             } else {
                 Log.d(TAG, "Wifi is disabled");
             }
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
-
             if (mManager != null) {
                 mManager.requestPeers(mChannel, peerListListener);
             }
-            Log.d(TAG, "P2P peers changed");
-
+            Log.d(TAG, "P2P mPeerList changed");
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
-
-            // Connection state changed!  We should probably do something about
-            // that.
-
             if (mManager == null) {
                 return;
             }
 
-            NetworkInfo networkInfo = (NetworkInfo) intent
-                    .getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+            NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
 
             if (networkInfo.isConnected()) {
-
                 // We are connected with the other device, request connection
                 // info to find group owner IP
-
-                //mManager.requestConnectionInfo(mChannel, connectionListener);
+                mManager.requestConnectionInfo(mChannel, new WifiP2pManager.ConnectionInfoListener() {
+                    @Override
+                    public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo) {
+                        mWifiP2pInfo = wifiP2pInfo;
+                    }
+                });
             }
 
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
             WifiP2pDevice device = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE);
-            activity.updateSelfId(device.deviceName);
+            mMainActivity.updateSelfId(device.deviceName);
         }
     }
 
@@ -79,19 +77,18 @@ public class GeekBroadcastReceiver extends BroadcastReceiver {
         public void onPeersAvailable(WifiP2pDeviceList peerList) {
 
             // Out with the old, in with the new.
-            peers.clear();
-            peers.addAll(peerList.getDeviceList());
+            mPeerList.clear();
+            mPeerList.addAll(peerList.getDeviceList());
 
             // If an AdapterView is backed by this data, notify it
             // of the change.  For instance, if you have a ListView of available
-            // peers, trigger an update.
+            // mPeerList, trigger an update.
             //((WiFiPeerListAdapter) getListAdapter()).notifyDataSetChanged();
-            if (peers.size() == 0) {
+            if (mPeerList.size() == 0) {
                 Log.d("", "No devices found");
-                return;
             } else {
-                Log.d(TAG, peers.toString());
-                activity.updatePeerList(peers);
+                Log.d(TAG, mPeerList.toString());
+                mMainActivity.updatePeerList(mPeerList);
                 //connect();
             }
         }
@@ -99,7 +96,7 @@ public class GeekBroadcastReceiver extends BroadcastReceiver {
 
     public void connect() {
         // Picking the first device found on the network.
-        WifiP2pDevice device = (WifiP2pDevice)peers.get(0);
+        WifiP2pDevice device = (WifiP2pDevice) mPeerList.get(0);
 
         WifiP2pConfig config = new WifiP2pConfig();
         config.deviceAddress = device.deviceAddress;
